@@ -1,8 +1,8 @@
 extends Node2D
 
-# TODO: Update to match your plugin's name
-var _plugin_name = "GodotAndroidPluginTemplate"
+var _plugin_name = "GodotLocalNotificationPlugin"
 var _android_plugin
+@export var button : Button
 
 func _ready():
 	if Engine.has_singleton(_plugin_name):
@@ -12,5 +12,4 @@ func _ready():
 
 func _on_Button_pressed():
 	if _android_plugin:
-		# TODO: Update to match your plugin's API
-		_android_plugin.helloWorld()
+		_android_plugin.beginBackgroundService()

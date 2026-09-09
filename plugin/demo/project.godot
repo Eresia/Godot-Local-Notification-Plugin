@@ -8,16 +8,24 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
-config/name="Android Plugin Demo"
+config/name="Local Notification Demo"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [debug]
 
 settings/stdout/verbose_stdout=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/GodotLocalNotificationPlugin/plugin.cfg")
 
 [rendering]
 

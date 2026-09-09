@@ -6,11 +6,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-// TODO: Update value to your plugin's name.
-val pluginName = "GodotAndroidPluginTemplate"
+val pluginName = "GodotLocalNotificationPlugin"
 
-// TODO: Update value to match your plugin's package name.
-val pluginPackageName = "org.godotengine.plugin.android.template"
+val pluginPackageName = "com.eresia.godot.localnotification"
 
 android {
     namespace = pluginPackageName
@@ -21,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 29
 
         manifestPlaceholders["godotPluginName"] = pluginName
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName
@@ -41,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core:1.15.0")
     implementation("org.godotengine:godot:4.5.1.stable")
     // TODO: Additional dependencies should be added to export_plugin.gd as well.
 }

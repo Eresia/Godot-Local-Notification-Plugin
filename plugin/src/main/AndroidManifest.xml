@@ -15,7 +15,21 @@
         -->
         <meta-data
             android:name="org.godotengine.plugin.v2.${godotPluginName}"
-            android:value="${godotPluginPackageName}.GodotAndroidPlugin"/>
+            android:value="${godotPluginPackageName}.GodotLocalNotificationPlugin"/>
+
+        <service
+            android:name=".WebSocketService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
+
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Get websockets in bakground"/>
+        </service>
+
     </application>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
 
 </manifest>

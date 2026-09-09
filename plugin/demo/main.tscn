@@ -1,11 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg3hylang5fxn"]
+[gd_scene format=3 uid="uid://cg3hylang5fxn"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_j0gfq"]
+[ext_resource type="Script" uid="uid://d25jwt6qd0blf" path="res://scripts/main.gd" id="1_j0gfq"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=1638715818 node_paths=PackedStringArray("button")]
 script = ExtResource("1_j0gfq")
+button = NodePath("Button")
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." unique_id=1215532951]
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
