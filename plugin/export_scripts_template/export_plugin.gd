@@ -33,9 +33,15 @@ class AndroidExportPlugin extends EditorExportPlugin:
 	func _get_android_dependencies(platform, debug):
 		# TODO: Add remote dependices here.
 		if debug:
-			return PackedStringArray(["androidx.core:core:1.15.0"])
+			return PackedStringArray([
+				"androidx.core:core:1.15.0",
+				"com.neovisionaries:nv-websocket-client:2.14"
+			])
 		else:
-			return PackedStringArray(["androidx.core:core:1.15.0"])
+			return PackedStringArray([
+				"androidx.core:core:1.15.0",
+				"com.neovisionaries:nv-websocket-client:2.14"
+			])
 
 	func _get_name():
 		return _plugin_name

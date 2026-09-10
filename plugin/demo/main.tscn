@@ -2,19 +2,56 @@
 
 [ext_resource type="Script" uid="uid://d25jwt6qd0blf" path="res://scripts/main.gd" id="1_j0gfq"]
 
-[node name="Main" type="Node2D" unique_id=1638715818 node_paths=PackedStringArray("button")]
-script = ExtResource("1_j0gfq")
-button = NodePath("Button")
-
-[node name="Button" type="Button" parent="." unique_id=1215532951]
-anchors_preset = 14
-anchor_top = 0.5
+[node name="Main" type="VBoxContainer" unique_id=1578971909 node_paths=PackedStringArray("received_label", "ip_edit")]
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 40.0
-offset_top = 250.0
-offset_right = 320.0
-offset_bottom = 312.0
-text = "Hello World"
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 66
+alignment = 1
+script = ExtResource("1_j0gfq")
+web_socket_url = "ws://192.168.1.13:4789"
+received_label = NodePath("Label")
+ip_edit = NodePath("LineEdit")
 
-[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1854178672]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 58
+text = "ws://127.0.0.1:9999"
+alignment = 1
+
+[node name="Start Button" type="Button" parent="." unique_id=1215532951]
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 58
+text = "Start Service"
+
+[node name="Send Button" type="Button" parent="." unique_id=1785217931]
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 58
+text = "Send Data"
+
+[node name="Stop Button" type="Button" parent="." unique_id=245495997]
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 58
+text = "Stop Service
+"
+
+[node name="Label" type="Label" parent="." unique_id=839340498]
+layout_mode = 2
+theme_override_font_sizes/font_size = 58
+text = "Received data: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Start Button" to="." method="_connect_to_server"]
+[connection signal="pressed" from="Send Button" to="." method="_send_data"]
+[connection signal="pressed" from="Stop Button" to="." method="_stop_server"]
