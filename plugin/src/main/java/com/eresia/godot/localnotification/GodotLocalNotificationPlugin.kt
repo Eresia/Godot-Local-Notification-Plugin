@@ -34,7 +34,7 @@ class GodotLocalNotificationPlugin: GodotPlugin {
     @UsedByGodot
     private fun beginBackgroundService()
     {
-        val activity = godot.getActivity() ?: return
+        val activity = activity ?: return
 
         val permissionArray = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             arrayOf<String?>(
