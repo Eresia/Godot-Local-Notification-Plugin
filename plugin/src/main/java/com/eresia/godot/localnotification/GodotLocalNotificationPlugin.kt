@@ -1,19 +1,40 @@
 package com.eresia.godot.localnotification
 
 import android.Manifest
-import android.content.Intent
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.app.NotificationCompat
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class GodotLocalNotificationPlugin: GodotPlugin {
+
+    class ForegroundNotification {
+        var channelId : String = "WebSocketServiceChannel"
+        var channelName : String = "WebSocket Service Channel"
+        var channelDescription : String = "WebSocket Service Channel Description"
+        var notificationTitle : String = "Foreground Notification"
+        var notificationConnectedText : String = "Foreground Connected Text"
+        var notificationIcon : Int = R.drawable.atom
+    }
+
+    var listener : WebsocketListenerExecutor? = null
+    private var notificationManager : NotificationManager? = null
+    private var channelId = "GodotLocalNotificationPlugin"
+
+    public var foregroundNotification : ForegroundNotification = ForegroundNotification()
+
+    private var executorService : ExecutorService? = null
 
     object Singleton
     {
@@ -25,17 +46,41 @@ class GodotLocalNotificationPlugin: GodotPlugin {
         Singleton.instance = this
     }
 
-    public var service : WebSocketService? = null
-
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
+
+    @UsedByGodot
+    private fun initForegroundNotification(channelId : String, channelName : String, channelDescription: String, title : String, connectedText : String) {
+        foregroundNotification.channelId = channelId
+        foregroundNotification.channelName = channelName
+        foregroundNotification.channelDescription = channelDescription
+        foregroundNotification.notificationTitle = title
+        foregroundNotification.notificationConnectedText = connectedText
+    }
+
+    @UsedByGodot
+    private fun initClassicNotification(newChannelId : String, channelName : String, channelDescription : String, notifImportance : Int = NotificationManager.IMPORTANCE_DEFAULT) {
+        val activity = activity ?: return
+
+        channelId = newChannelId
+
+        val channel = NotificationChannel(
+            channelId,
+            channelName,
+            notifImportance,
+        )
+
+        channel.description = channelDescription
+
+        notificationManager = activity.getSystemService(NotificationManager::class.java)
+        notificationManager?.createNotificationChannel(channel)
+    }
 
     @UsedByGodot
     private fun connectToServer(websocketUrl : String)
     {
-        if(service != null)
+        if(listener != null)
         {
-            service?.stop()
-            service = null
+            stopServer()
         }
 
         val activity = activity ?: return
@@ -53,19 +98,49 @@ class GodotLocalNotificationPlugin: GodotPlugin {
         }
 
         ActivityCompat.requestPermissions(activity, permissionArray, 0)
-        val intent = Intent(activity, WebSocketService::class.java)
-        intent.putExtra("websocket_url", websocketUrl)
-        ContextCompat.startForegroundService(activity, intent)
+        listener = WebsocketListenerExecutor(this, activity, websocketUrl)
+        executorService = Executors.newSingleThreadExecutor()
+        executorService?.execute(listener)
     }
 
     @UsedByGodot
-    private fun stopServer() {
-        service?.stop()
+    private fun disconnect() {
+        listener?.disconnect()
+    }
+
+    public fun stopServer() {
+        listener?.stop()
+        executorService?.shutdown()
+        listener = null
     }
 
     @UsedByGodot
     private fun sendData(data : String) {
-        service?.sendData(data)
+        listener?.sendData(data)
+    }
+
+    @UsedByGodot
+    private fun inServerConnectingState() : Boolean {
+        return listener != null && listener!!.inConnectingState
+    }
+
+    @UsedByGodot
+    private fun isServerConnected() : Boolean {
+        return listener != null && listener!!.isSocketOpen()
+    }
+
+    @UsedByGodot
+    private fun notify(notifId : Int, notifTitle : String, notifText : String, notifPriority : Int = NotificationCompat.PRIORITY_DEFAULT) {
+        val activity = activity ?: return
+
+        val notification : Notification = NotificationCompat.Builder(activity, channelId)
+            .setSmallIcon(R.drawable.atom)
+            .setContentTitle(notifTitle)
+            .setContentText(notifText)
+            .setPriority(notifPriority)
+            .build()
+
+        notificationManager?.notify(notifId, notification)
     }
 
     fun onWebSocketData(data : String) {
